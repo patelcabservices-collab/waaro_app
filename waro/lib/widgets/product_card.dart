@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:waro/models/product_model.dart';
@@ -19,219 +20,117 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
+    return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.border.withOpacity(0.3)),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.borderSoft),
       ),
       clipBehavior: Clip.antiAlias,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {}, // Detail page navigation
+          onTap: () => Get.toNamed('/product'),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Product Image with Hero
               Stack(
                 children: [
-                  Hero(
-                    tag: 'product_${product.id}',
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: CachedNetworkImage(
-                        imageUrl: product.image ?? '',
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [AppColors.lightGrey, AppColors.white],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          color: AppColors.lightGrey,
-                          child: const Icon(LucideIcons.image, color: AppColors.grey),
-                        ),
+                  AspectRatio(
+                    aspectRatio: 1,
+                    child: CachedNetworkImage(
+                      imageUrl: product.image ?? '',
+                      fit: BoxFit.cover,
+                      placeholder: (_, __) => Container(color: AppColors.surfaceAlt),
+                      errorWidget: (_, __, ___) => Container(
+                        color: AppColors.surfaceAlt,
+                        child: const Center(child: Icon(LucideIcons.box, color: AppColors.textMuted)),
                       ),
                     ),
                   ),
-                  // Premium Verified Badge
                   if (product.verified == true)
                     Positioned(
-                      top: 12,
-                      right: 12,
+                      top: 10,
+                      left: 10,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.85),
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(color: Colors.black12, blurRadius: 4),
-                          ],
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(999),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.verified, color: Color(0xFF1D9BF0), size: 14),
+                            const Icon(LucideIcons.shieldCheck, size: 11, color: AppColors.success),
                             const SizedBox(width: 4),
-                            Text(
-                              'VERIFIED',
-                              style: GoogleFonts.outfit(
-                                fontSize: 9, 
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
+                            Text('Verified',
+                                style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 10, fontWeight: FontWeight.w800, color: AppColors.success)),
                           ],
                         ),
                       ),
                     ),
                 ],
               ),
-              
               Padding(
-                padding: const EdgeInsets.all(14),
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       product.productName ?? '',
-                      style: GoogleFonts.outfit(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.foreground,
-                        height: 1.2,
-                      ),
-                      maxLines: 1,
+                      style: GoogleFonts.plusJakartaSans(
+                          fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.foreground, height: 1.25),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
-                        const Icon(LucideIcons.mapPin, size: 12, color: AppColors.grey),
+                        const Icon(LucideIcons.mapPin, size: 11, color: AppColors.textMuted),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
-                            '${product.city ?? "Gujarat"}, ${product.state ?? "IN"}',
-                            style: GoogleFonts.outfit(
-                              fontSize: 11,
-                              color: AppColors.grey,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            '${product.city ?? "India"}, ${product.state ?? ""}',
+                            style: GoogleFonts.plusJakartaSans(
+                                fontSize: 11, color: AppColors.textSecondary, fontWeight: FontWeight.w600),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
-                    
-                    const SizedBox(height: 14),
-                    // Glassy Price Section
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.primary.withOpacity(0.1)),
+                    const SizedBox(height: 10),
+                    Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                      Text('₹${product.price ?? "—"}',
+                          style: GoogleFonts.plusJakartaSans(
+                              fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.foreground)),
+                      const SizedBox(width: 4),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 2),
+                        child: Text('/ ${product.priceUnit ?? "Unit"}',
+                            style: GoogleFonts.plusJakartaSans(
+                                fontSize: 11, color: AppColors.textSecondary, fontWeight: FontWeight.w600)),
                       ),
-                      child: Row(
-                        children: [
-                          Text(
-                            '₹${product.price ?? "Contact"}',
-                            style: GoogleFonts.outfit(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w900,
-                              color: AppColors.primaryDark,
-                            ),
-                          ),
-                          Text(
-                            ' / ${product.priceUnit ?? "Unit"}',
-                            style: GoogleFonts.outfit(
-                              fontSize: 10,
-                              color: AppColors.grey,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 14),
-                    // Refined Company Info
+                    ]),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.primary.withOpacity(0.5)),
-                          ),
-                          child: CircleAvatar(
-                            radius: 11,
-                            backgroundColor: AppColors.primary,
-                            backgroundImage: product.companyLogo != null 
-                              ? NetworkImage(product.companyLogo!) 
-                              : null,
-                            child: product.companyLogo == null 
-                              ? Text(
-                                  (product.companyName ?? "C").substring(0, 1).toUpperCase(),
-                                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black),
-                                )
-                              : null,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            product.companyName ?? 'Company',
-                            style: GoogleFonts.outfit(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.foreground,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                    
-                    const SizedBox(height: 16),
-                    // Stylized Action Buttons
-                    Row(
-                      children: [
-                        _buildSmallActionButton(LucideIcons.phone, Colors.white, AppColors.primary, onCallClick),
+                        _iconBtn(LucideIcons.phone, onCallClick),
                         const SizedBox(width: 8),
                         Expanded(
                           child: ElevatedButton(
                             onPressed: onInquiryClick,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: Colors.black,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              backgroundColor: AppColors.foreground,
+                              foregroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+                              padding: const EdgeInsets.symmetric(vertical: 11),
                               elevation: 0,
                             ),
-                            child: Text(
-                              'SEND INQUIRY',
-                              style: GoogleFonts.outfit(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
+                            child: Text('Inquire',
+                                style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.w800, fontSize: 12.5, letterSpacing: 0.2)),
                           ),
                         ),
                       ],
@@ -246,20 +145,19 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSmallActionButton(IconData icon, Color bg, Color border, VoidCallback? onTap) {
+  Widget _iconBtn(IconData icon, VoidCallback? onTap) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(999),
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: border),
+          color: AppColors.surfaceAlt,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: AppColors.borderSoft),
         ),
-        child: Icon(icon, size: 16, color: AppColors.primaryDark),
+        child: Icon(icon, size: 16, color: AppColors.foreground),
       ),
     );
   }
-
 }
