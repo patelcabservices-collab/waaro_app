@@ -1,4 +1,4 @@
-modules = ["ruby-3.2", "swift-5.8"]
+modules = ["ruby-3.2", "swift-5.8", "python-3.11"]
 [agent]
 expertMode = true
 
@@ -21,13 +21,13 @@ args = "Start application"
 name = "Start application"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd waro && flutter run -d web-server --web-hostname=0.0.0.0 --web-port=5000"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd waro && (test -f build/web/index.html || flutter build web --release) && cd build/web && python3 -m http.server 5000 --bind 0.0.0.0"
+waitForPort = 5000
 
 [[ports]]
 localPort = 5000

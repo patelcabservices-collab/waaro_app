@@ -10,9 +10,13 @@ A Flutter web/mobile app (project name `waro`).
 - `waro/` — Flutter project (lib/, web/, android/, ios/, etc.)
 
 ## Development
-- Workflow `Start application` runs:
-  `cd waro && flutter run -d web-server --web-hostname=0.0.0.0 --web-port=5000`
+- Workflow `Start application` runs a release build and serves it:
+  `cd waro && (test -f build/web/index.html || flutter build web --release) && cd build/web && python3 -m http.server 5000 --bind 0.0.0.0`
 - Served on port 5000 with host 0.0.0.0 for the Replit preview proxy.
+- Note: Flutter's dev compiler (DDC) in the Nix Flutter 3.32 SDK has a bug
+  causing `InvalidType` errors on framework code, so the release build path
+  is used instead. To pick up code changes, delete `waro/build` and restart
+  the workflow.
 
 ## Deployment
 - Static deployment.
